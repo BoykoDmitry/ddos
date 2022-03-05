@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ddos": {
+      "commandName": "Project",
+      "commandLineArgs": "-o 15 -p false -s 3600"
+    }
+  }
+}
