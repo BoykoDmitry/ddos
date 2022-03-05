@@ -78,6 +78,8 @@ namespace ddos.App
                 {
                     _logger.LogError(ex.Message, ex);
                 }
+
+                cancellationToken.ThrowIfCancellationRequested();
             }
 
             _logger.LogInformation("Finished.");
