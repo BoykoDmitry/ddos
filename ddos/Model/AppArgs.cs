@@ -10,7 +10,7 @@ namespace ddos.Model
     public class AppArgs : IAppArgs
     {
         public int SecondsToRun { get; set; } = 120;
-        public bool UseProxy { get; set; } = true;
+        public bool UseProxy { get; set; } = false;
         public string TargetsFile { get; set; } = "Targets.txt";
         public int Threads { get; set; } = 100;
         public int HttpTimeOut { get; set; } = 10;
