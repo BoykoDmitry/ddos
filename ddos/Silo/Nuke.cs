@@ -16,13 +16,16 @@ namespace ddos.Silo
         private readonly ILogger _logger;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly IServiceProvider _serviceProvider;
+        private readonly IAppArgs _appArgs;
         public Nuke(ILogger<Nuke> logger,
              IServiceProvider serviceProvider,
+             IAppArgs appArgs,
              IHttpClientFactory httpClientFactory)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));            
             _httpClientFactory = httpClientFactory ?? throw new ArgumentNullException(nameof(httpClientFactory));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+            _appArgs = appArgs ?? throw new ArgumentNullException(nameof(appArgs));
         }
 
         public async Task Boom(string destination, bool useProxy, CancellationToken cancellationToken)
@@ -35,6 +38,7 @@ namespace ddos.Silo
                 {
                     var handler = _serviceProvider.GetService<ProxyHttpHandler>();
                     client = new HttpClient(handler);
+                    client.Timeout = TimeSpan.FromSeconds(_appArgs.HttpTimeOut);
                 }
                 else
                     client =  _httpClientFactory.CreateClient("HttpClient");
