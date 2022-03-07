@@ -40,7 +40,13 @@ namespace ddos.Silo
 
                         tcp.Close(); 
                     }
+
+                    cancellationToken.ThrowIfCancellationRequested();
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                Logger.LogError("Time out.");
             }
             catch (Exception ex)
             {

