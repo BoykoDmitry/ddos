@@ -13,5 +13,6 @@ namespace ddos.Interfaces
         string TargetsFile { get; }
         int Threads { get; }
         int HttpTimeOut { get; }
+        string Mode { get; }
     }
 }

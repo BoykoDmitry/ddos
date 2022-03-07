@@ -10,5 +10,6 @@ namespace ddos.Interfaces
     public interface INuke
     {
         Task Boom(string destination, bool useProxy, CancellationToken cancellationToken);
+        string WhoAmI();
     }
 }

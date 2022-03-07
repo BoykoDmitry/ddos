@@ -36,6 +36,10 @@ namespace ddos
             .As('o', "httpTimeOut")
             .SetDefault(10);
 
+            p.Setup<string>(_ => _.Mode)
+            .As('m', "mode")
+            .SetDefault("Random");
+
             p.Parse(args);
 
             return p.Object;
